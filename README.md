@@ -1,1 +1,1 @@
-# VHFL_SplitNN
+# VHFL with SplitNN
