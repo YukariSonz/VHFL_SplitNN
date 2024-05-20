@@ -17,7 +17,7 @@ from models.Nets import ClientModelmnist, ServerModelmnist, VHFLGroup
 from models.Fed import FedAvg
 from models.test import test_img
 # from efficientnet_pytorch import EfficientNet
-from data.mnistVFL import mnistVFL
+from data.imageVFL import imageVFL
 
 if __name__ == '__main__':
     # parse args
@@ -29,49 +29,55 @@ if __name__ == '__main__':
         trans_mnist = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
         dataset_train = datasets.MNIST('../data/mnist/', train=True, download=True, transform=trans_mnist)
         dataset_test = datasets.MNIST('../data/mnist/', train=False, download=True, transform=trans_mnist)
-
+    elif args.dataset == 'fmnist':
+        trans_mnist = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        dataset_train = datasets.FashionMNIST('../data/fmnist/', train=True, download=True, transform=trans_mnist)
+        dataset_test = datasets.FashionMNIST('../data/fmnist/', train=False, download=True, transform=trans_mnist)
+    else:
+        print("jaja")
+        exit('Error: unrecognized dataset')
         
-        # dataset_train = split_VFL_data
-        img, label, _ = split_VFL_data(dataset_train)
+    # dataset_train = split_VFL_data
+    img, label, _ = split_VFL_data(dataset_train)
         
-        img_1 = torch.cat(img[0])  # get the first split of the data
-        img_2 = torch.cat(img[1])  # get the second split of the data
+    img_1 = torch.cat(img[0])  # get the first split of the data
+    img_2 = torch.cat(img[1])  # get the second split of the data
 
-        img_1 = img_1.view(img_1.shape[0], -1)
-        img_2 = img_2.view(img_2.shape[0], -1)
+    img_1 = img_1.view(img_1.shape[0], -1)
+    img_2 = img_2.view(img_2.shape[0], -1)
 
 
 
-        # First 40000 images, HFL & non iid, 4 clients
-        dataset_train_HFL_1 = img_1[:40000]
-        dataset_train_HFL_2 = img_2[:40000]
-        label_HFL = label[:40000]
-        # Create dataset
+    # First 40000 images, HFL & non iid, 4 clients
+    dataset_train_HFL_1 = img_1[:40000]
+    dataset_train_HFL_2 = img_2[:40000]
+    label_HFL = label[:40000]
+    # Create dataset
 
-        dataset_train_HFL = mnistVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
-        dict_users_HFL = mnist_noniid(dataset_train_HFL, 4)
+    dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
+    dict_users_HFL = mnist_noniid(dataset_train_HFL, 4)
 
-        # Last 20000 images, VFL, 2 GROUPS of clients, iid
-        dataset_train_VFL_1 = img_1[40000:]
-        dataset_train_VFL_2 = img_2[40000:]
-        label_VFL = label[40000:]
-        dataset_train_VFL = mnistVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
-        dict_users_VFL = mnist_iid(dataset_train_VFL, 2)
+    # Last 20000 images, VFL, 2 GROUPS of clients, iid
+    dataset_train_VFL_1 = img_1[40000:]
+    dataset_train_VFL_2 = img_2[40000:]
+    label_VFL = label[40000:]
+    dataset_train_VFL = imageVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
+    dict_users_VFL = mnist_iid(dataset_train_VFL, 2)
         
 
 
-        img_test, label_test, _ = split_VFL_data(dataset_test)
-        img_test_1 = torch.cat(img_test[0])  # get the first split of the data
-        img_test_2 = torch.cat(img_test[1])  # get the second split of the data
-        img_test_1 = img_test_1.view(img_test_1.shape[0], -1)
-        img_test_2 = img_test_2.view(img_test_2.shape[0], -1)
-        dataset_test = mnistVFL(img_test_1, img_test_2, label_test)
+    img_test, label_test, _ = split_VFL_data(dataset_test)
+    img_test_1 = torch.cat(img_test[0])  # get the first split of the data
+    img_test_2 = torch.cat(img_test[1])  # get the second split of the data
+    img_test_1 = img_test_1.view(img_test_1.shape[0], -1)
+    img_test_2 = img_test_2.view(img_test_2.shape[0], -1)
+    dataset_test = imageVFL(img_test_1, img_test_2, label_test)
 
 
 
-        # print(len(dataset_train_HFL))
-        # print(len(dataset_train_VFL))
-        # print(len(dataset_test))
+    # print(len(dataset_train_HFL))
+    # print(len(dataset_train_VFL))
+    # print(len(dataset_test))
 
 
 
@@ -110,8 +116,7 @@ if __name__ == '__main__':
 
 
 
-    else:
-        exit('Error: unrecognized dataset')
+    
     # img_size = dataset_train[0][0].shape
 
     # build model

@@ -2,7 +2,7 @@ import torch
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 
-class mnistVFL(Dataset):
+class imageVFL(Dataset):
 
     def __init__(self, img1, img2, label):
         self.data = torch.stack((img1, img2), dim=1)
