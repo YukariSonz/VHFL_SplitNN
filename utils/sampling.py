@@ -6,6 +6,10 @@ import torch
 import numpy as np
 from torchvision import datasets, transforms
 
+
+
+
+# PSI + VFL Method
 def split_VFL_data(dataset, worker_list=None, n_workers=2):
 
     if worker_list is None:
@@ -161,13 +165,13 @@ def cifar_noniid(dataset, num_users):
     """
 
     # Non iid but equal
-    num_shards, num_imgs = num_users*2, int(25000/num_users)
+    num_shards, num_imgs = num_users*2, int(len(dataset)/num_users/2)
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([], dtype='int64') for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
 
 
-    labels = dataset.targets
+    labels = dataset.train_labels.numpy()
 
     # sort labels
     idxs_labels = np.vstack((idxs, labels))
@@ -199,7 +203,7 @@ def cifar_noniid_Strong(dataset, num_users):
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([], dtype='int64') for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
-    labels = dataset.targets
+    labels = dataset.train_labels.numpy()
 
     # sort labels
     idxs_labels = np.vstack((idxs, labels))
