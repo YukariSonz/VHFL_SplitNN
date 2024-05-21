@@ -116,8 +116,6 @@ if __name__ == '__main__':
         # img_1 = torch.cat(img[0])  # get the first split of the data
         # img_2 = torch.cat(img[1])  # get the second split of the data
 
-        print(img_1.shape)
-
 
 
         # img_1 = img_1.view(img_1.shape[0], -1)
@@ -143,11 +141,7 @@ if __name__ == '__main__':
         dict_users_VFL = cifar_iid(dataset_train_VFL, 2)
         
 
-        img_test, label_test, _ = split_VFL_data(dataset_test)
-        img_test_1 = torch.cat(img_test[0])  # get the first split of the data
-        img_test_2 = torch.cat(img_test[1])  # get the second split of the data
-        img_test_1 = img_test_1.view(img_test_1.shape[0], -1)
-        img_test_2 = img_test_2.view(img_test_2.shape[0], -1)
+        img_test_1, img_test_2, label_test, _ = SplitImageDataset(dataset_test)
         dataset_test = imageVFL(img_test_1, img_test_2, label_test)
 
 
@@ -198,8 +192,10 @@ if __name__ == '__main__':
     # img_size = dataset_train[0][0].shape
 
     # build model
-    net_glob = VHFLGroup(args.opt, args.lr)
-    # net_glob = VHFLGroupCifar()
+    if args.dataset == 'mnist' or args.dataset =='fmnist':
+        net_glob = VHFLGroup(args.opt, args.lr)
+    elif args.dataset == 'cifar':
+        net_glob = VHFLGroupCifar(args.opt, args.lr)
     net_glob.train()
 
     # copy weights

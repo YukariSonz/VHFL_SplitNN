@@ -42,23 +42,22 @@ class ClientModelCifar(nn.Module):
         super(ClientModelCifar, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
 
     def forward(self, x):
-        print(x.shape)
         x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
         return x
 
 class ServerModelCifar(nn.Module):
     def __init__(self, num_classes):
         super(ServerModelCifar, self).__init__()
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc1 = nn.Linear(32 * 1 * 5, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, num_classes)
         self.pool = nn.MaxPool2d(2,2)
     def forward(self, x):
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
+        x = x.view(-1, 32 * 1 * 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -102,15 +101,20 @@ class VHFLGroup(nn.Module):
         self.opt_s.step()
     
 class VHFLGroupCifar(nn.Module):
-    def __init__(self):
+    def __init__(self, opt, lr):
         super(VHFLGroupCifar, self).__init__()
         self.client_model_1 = ClientModelCifar()
         self.client_model_2 = ClientModelCifar()
         self.server = ServerModelCifar(10)
 
-        self.opt_c1 = torch.optim.SGD(params=self.client_model_1.parameters(),lr=0.01)
-        self.opt_c2 = torch.optim.SGD(params=self.client_model_2.parameters(),lr=0.01)
-        self.opt_s = torch.optim.SGD(params=self.server.parameters(),lr=0.1)
+        if opt == "SGD":
+            self.opt_c1 = torch.optim.SGD(params=self.client_model_1.parameters(),lr=lr)
+            self.opt_c2 = torch.optim.SGD(params=self.client_model_2.parameters(),lr=lr)
+            self.opt_s = torch.optim.SGD(params=self.server.parameters(),lr=lr)
+        elif opt == "Adam":
+            self.opt_c1 = torch.optim.Adam(params=self.client_model_1.parameters(),lr=lr)
+            self.opt_c2 = torch.optim.Adam(params=self.client_model_2.parameters(),lr=lr)
+            self.opt_s = torch.optim.Adam(params=self.server.parameters(),lr=lr)
 
     def forward(self, x1, x2):
         x1 = self.client_model_1(x1)
