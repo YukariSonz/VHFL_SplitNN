@@ -143,7 +143,64 @@ if __name__ == '__main__':
 
         img_test_1, img_test_2, label_test, _ = SplitImageDataset(dataset_test)
         dataset_test = imageVFL(img_test_1, img_test_2, label_test)
+    elif args.dataset == 'SVHN':
+        # trans_cifar = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        transform_train = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
 
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+        
+
+        # dataset_train = datasets.CIFAR10('../data/cifar', train=True, download=True, transform=trans_cifar)
+        # dataset_test = datasets.CIFAR10('../data/cifar', train=False, download=True, transform=trans_cifar)
+        dataset_train = datasets.SVHN('../data/SVHN', split= "train" , download=True, transform=transform_train)
+        dataset_test = datasets.SVHN('../data/SVHN', split= "train" , download=True, transform=transform_test)
+
+        img_1, img_2, label, _ = SplitImageDataset(dataset_train)
+        
+        # img_1 = torch.cat(img[0])  # get the first split of the data
+        # img_2 = torch.cat(img[1])  # get the second split of the data
+
+
+
+        # img_1 = img_1.view(img_1.shape[0], -1)
+        # img_2 = img_2.view(img_2.shape[0], -1)
+
+        # print(img_1.shape)
+
+        # Shape: SVHN Train got 73,257 data points, we take first 70000
+
+        img_1 = img_1[:70000]
+        img_2 = img_2[:70000]
+        label = label[:70000]
+
+
+        # First 42000 images, HFL & non iid, 3 clients (60%)
+        dataset_train_HFL_1 = img_1[:42000]
+        dataset_train_HFL_2 = img_2[:42000]
+        label_HFL = label[:42000]
+        # Create dataset
+
+        dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
+        dict_users_HFL = cifar_noniid(dataset_train_HFL, 4)
+
+        # Last 28000 images, VFL, 2 GROUPS of clients, iid (40% of data)
+        dataset_train_VFL_1 = img_1[42000:]
+        dataset_train_VFL_2 = img_2[42000:]
+        label_VFL = label[42000:]
+        dataset_train_VFL = imageVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
+        dict_users_VFL = cifar_iid(dataset_train_VFL, 2)
+        
+
+        img_test_1, img_test_2, label_test, _ = SplitImageDataset(dataset_test)
+        dataset_test = imageVFL(img_test_1, img_test_2, label_test)
 
     else:
         exit('Error: unrecognized dataset')
@@ -157,7 +214,7 @@ if __name__ == '__main__':
 
 
     
-    # Palse CIFAR
+    # Pause CIFAR
 
     # elif args.dataset == 'cifar':
     #     # trans_cifar = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -194,7 +251,7 @@ if __name__ == '__main__':
     # build model
     if args.dataset == 'mnist' or args.dataset =='fmnist':
         net_glob = VHFLGroup(args.opt, args.lr)
-    elif args.dataset == 'cifar':
+    elif args.dataset == 'cifar' or args.dataset == "SVHN":
         net_glob = VHFLGroupCifar(args.opt, args.lr)
     net_glob.train()
 
