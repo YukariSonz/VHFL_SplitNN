@@ -291,7 +291,10 @@ if __name__ == '__main__':
             selected_idxs = np.random.choice(dict_users_HFL[idx], int(fraction * len(dict_users_HFL[idx])), replace = False)
             # local = LocalUpdate(args=args, dataset=dataset_train, idxs=dict_users[idx])
             local = LocalUpdate(args=args, dataset=dataset_train_HFL, idxs=selected_idxs)
-            w, loss, acc = local.train(net=copy.deepcopy(net_glob).to(args.device))
+
+            model = copy.deepcopy(net_glob)
+            model.to(args.device)
+            w, loss, acc = local.train(net=model)
 
 
             w_locals_HFL.append(copy.deepcopy(w))
@@ -309,7 +312,9 @@ if __name__ == '__main__':
             selected_idxs = np.random.choice(dict_users_VFL[idx], int(fraction * len(dict_users_VFL[idx])), replace = False)
             # local = LocalUpdate(args=args, dataset=dataset_train, idxs=dict_users[idx])
             local = LocalUpdate(args=args, dataset=dataset_train_VFL, idxs=selected_idxs)
-            w, loss, acc = local.train(net=copy.deepcopy(net_glob).to(args.device))
+            model = copy.deepcopy(net_glob)
+            model.to(args.device)
+            w, loss, acc = local.train(net=model)
 
             w_locals_VFL.append(copy.deepcopy(w))
             loss_locals.append(copy.deepcopy(loss))
@@ -336,6 +341,7 @@ if __name__ == '__main__':
         # Evaluate the accuracy
         if iter % evaluation_frequency == 0:
             net_glob.eval()
+            net_glob.to(args.device)
             acc, loss = test_img(net_glob, dataset_test, args)
             print("Testing accuracy: {:.2f}".format(acc))
             net_glob.train()

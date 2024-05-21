@@ -99,6 +99,11 @@ class VHFLGroup(nn.Module):
         self.opt_c1.step()
         self.opt_c2.step()
         self.opt_s.step()
+
+    def to(self, device):
+        self.client_model_1.to(device)
+        self.client_model_2.to(device)
+        self.server.to(device)
     
 class VHFLGroupCifar(nn.Module):
     def __init__(self, opt, lr):
@@ -133,3 +138,8 @@ class VHFLGroupCifar(nn.Module):
         self.opt_c1.step()
         self.opt_c2.step()
         self.opt_s.step()
+        
+    def to(self, device):
+        self.client_model_1.to(device)
+        self.client_model_2.to(device)
+        self.server.to(device)
