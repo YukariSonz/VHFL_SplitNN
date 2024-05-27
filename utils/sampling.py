@@ -75,7 +75,7 @@ def mnist_noniid(dataset, num_users):
     :return:
     """
 
-    # Non iid but equal
+    # Non iid but equal size
     # num_shards, num_imgs = 2000, 30
     num_shards, num_imgs = num_users*2, int(len(dataset)/num_users/2)
     idx_shard = [i for i in range(num_shards)]

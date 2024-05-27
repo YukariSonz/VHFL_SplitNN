@@ -50,7 +50,7 @@ for i in range(2):
         if i == 0:
             ax.set_ylim([0, 100])
         else:
-            ax.set_ylim([0, 2])
+            ax.set_ylim([0, 3])
 
 
 plt.legend()
