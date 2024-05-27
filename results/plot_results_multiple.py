@@ -48,9 +48,9 @@ for i in range(2):
 
         # Accuracy
         if i == 0:
-            ax.set_ylim([60, 100])
+            ax.set_ylim([0, 100])
         else:
-            ax.set_ylim([0, 0.7])
+            ax.set_ylim([0, 2])
 
 
 plt.legend()
