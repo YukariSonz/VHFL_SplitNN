@@ -188,13 +188,10 @@ if __name__ == '__main__':
 
         # print(img_1.shape)
 
-        # Shape: SVHN Train got 73,257 data points, we take first 70000
-
-        
-
-        img_1 = img_1[:70000]
-        img_2 = img_2[:70000]
-        label = label[:70000]
+        # Shape: SVHN Train got 73,257 data points, we take first 70000        
+        # img_1 = img_1[:70000]
+        # img_2 = img_2[:70000]
+        # label = label[:70000]
 
         data_length = len(img_1)
         HFL_Split = int(HFL_DATA * data_length)
