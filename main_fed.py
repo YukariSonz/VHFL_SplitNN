@@ -73,7 +73,6 @@ if __name__ == '__main__':
         HFL_Split = int(HFL_DATA * data_length)
 
 
-        # First 40000 images, HFL & non iid, 4 clients
         dataset_train_HFL_1 = img_1[:HFL_Split]
         dataset_train_HFL_2 = img_2[:HFL_Split]
         label_HFL = label[:HFL_Split]
@@ -82,7 +81,6 @@ if __name__ == '__main__':
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
         dict_users_HFL = mnist_noniid(dataset_train_HFL, HFL_CLIENTS)
 
-        # Last 20000 images, VFL, 2 GROUPS of clients, iid
         dataset_train_VFL_1 = img_1[HFL_Split:]
         dataset_train_VFL_2 = img_2[HFL_Split:]
         label_VFL = label[HFL_Split:]
@@ -137,7 +135,6 @@ if __name__ == '__main__':
         
 
 
-        # First 30000 images, HFL & non iid, 3 clients
         dataset_train_HFL_1 = img_1[:HFL_Split]
         dataset_train_HFL_2 = img_2[:HFL_Split]
         label_HFL = label[:HFL_Split]
@@ -146,7 +143,6 @@ if __name__ == '__main__':
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
         dict_users_HFL = cifar_noniid(dataset_train_HFL, HFL_CLIENTS)
 
-        # Last 20000 images, VFL, 2 GROUPS of clients, iid
         dataset_train_VFL_1 = img_1[HFL_Split:]
         dataset_train_VFL_2 = img_2[HFL_Split:]
         label_VFL = label[HFL_Split:]
@@ -188,16 +184,16 @@ if __name__ == '__main__':
 
         # print(img_1.shape)
 
-        # Shape: SVHN Train got 73,257 data points, we take first 70000        
-        # img_1 = img_1[:70000]
-        # img_2 = img_2[:70000]
-        # label = label[:70000]
+        # Shape: SVHN Train got 73,257 data points, we take first 70000 to avoid non-integer problem in data-splitting     
+        img_1 = img_1[:70000]
+        img_2 = img_2[:70000]
+        label = label[:70000]
 
         data_length = len(img_1)
         HFL_Split = int(HFL_DATA * data_length)
 
 
-        # First 42000 images, HFL & non iid, 3 clients (60%)
+
         dataset_train_HFL_1 = img_1[:HFL_Split]
         dataset_train_HFL_2 = img_2[:HFL_Split]
         label_HFL = label[:HFL_Split]
@@ -206,7 +202,6 @@ if __name__ == '__main__':
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
         dict_users_HFL = cifar_noniid(dataset_train_HFL, HFL_CLIENTS)
 
-        # Last 28000 images, VFL, 2 GROUPS of clients, iid (40% of data)
         dataset_train_VFL_1 = img_1[HFL_Split:]
         dataset_train_VFL_2 = img_2[HFL_Split:]
         label_VFL = label[HFL_Split:]
