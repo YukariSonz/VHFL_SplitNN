@@ -44,10 +44,10 @@ if __name__ == '__main__':
     args.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 
 
-    HFL_CLIENTS = args.HFL_Clietns
-    VFL_CLIENTS = args.VFL_Clietns
+    HFL_CLIENTS = args.HFL_Clients
+    VFL_CLIENTS = args.VFL_Clients
 
-    HFL_DATA = args.HFL_Data_split
+    HFL_DATA = args.HFL_Data_Split
     VFL_DATA = 1 - HFL_DATA
 
     # load dataset and split users
