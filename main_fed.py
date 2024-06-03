@@ -20,7 +20,11 @@ from models.test import test_img
 from data.imageVFL import imageVFL, SplitImageDataset
 import csv
 
+HFL_CLIENTS = 10
+VFL_CLIENTS = 5
 
+HFL_DATA = 0.6
+VFL_DATA = 0.4
 
 def write_to_csv(file_name, training_loss, testing_loss, training_acc, testing_acc):
     # Parse
@@ -62,22 +66,25 @@ if __name__ == '__main__':
         img_1 = img_1.view(img_1.shape[0], -1)
         img_2 = img_2.view(img_2.shape[0], -1)
 
+        data_length = len(img_1)
+        HFL_Split = int(HFL_DATA * data_length)
+
 
         # First 40000 images, HFL & non iid, 4 clients
-        dataset_train_HFL_1 = img_1[:40000]
-        dataset_train_HFL_2 = img_2[:40000]
-        label_HFL = label[:40000]
+        dataset_train_HFL_1 = img_1[:HFL_Split]
+        dataset_train_HFL_2 = img_2[:HFL_Split]
+        label_HFL = label[:HFL_Split]
         # Create dataset
 
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
-        dict_users_HFL = mnist_noniid(dataset_train_HFL, 4)
+        dict_users_HFL = mnist_noniid(dataset_train_HFL, HFL_CLIENTS)
 
         # Last 20000 images, VFL, 2 GROUPS of clients, iid
-        dataset_train_VFL_1 = img_1[40000:]
-        dataset_train_VFL_2 = img_2[40000:]
-        label_VFL = label[40000:]
+        dataset_train_VFL_1 = img_1[HFL_Split:]
+        dataset_train_VFL_2 = img_2[HFL_Split:]
+        label_VFL = label[HFL_Split:]
         dataset_train_VFL = imageVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
-        dict_users_VFL = mnist_iid(dataset_train_VFL, 2)
+        dict_users_VFL = mnist_iid(dataset_train_VFL, VFL_CLIENTS)
         
 
         img_test, label_test, _ = split_VFL_data(dataset_test)
@@ -122,23 +129,26 @@ if __name__ == '__main__':
         # img_2 = img_2.view(img_2.shape[0], -1)
 
         # print(img_1.shape)
+        data_length = len(img_1)
+        HFL_Split = int(HFL_DATA * data_length)
+        
 
 
         # First 30000 images, HFL & non iid, 3 clients
-        dataset_train_HFL_1 = img_1[:30000]
-        dataset_train_HFL_2 = img_2[:30000]
-        label_HFL = label[:30000]
+        dataset_train_HFL_1 = img_1[:HFL_Split]
+        dataset_train_HFL_2 = img_2[:HFL_Split]
+        label_HFL = label[:HFL_Split]
         # Create dataset
 
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
-        dict_users_HFL = cifar_noniid(dataset_train_HFL, 4)
+        dict_users_HFL = cifar_noniid(dataset_train_HFL, HFL_CLIENTS)
 
         # Last 20000 images, VFL, 2 GROUPS of clients, iid
-        dataset_train_VFL_1 = img_1[30000:]
-        dataset_train_VFL_2 = img_2[30000:]
-        label_VFL = label[30000:]
+        dataset_train_VFL_1 = img_1[HFL_Split:]
+        dataset_train_VFL_2 = img_2[HFL_Split:]
+        label_VFL = label[HFL_Split:]
         dataset_train_VFL = imageVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
-        dict_users_VFL = cifar_iid(dataset_train_VFL, 2)
+        dict_users_VFL = cifar_iid(dataset_train_VFL, VFL_CLIENTS)
         
 
         img_test_1, img_test_2, label_test, _ = SplitImageDataset(dataset_test)
@@ -177,26 +187,31 @@ if __name__ == '__main__':
 
         # Shape: SVHN Train got 73,257 data points, we take first 70000
 
+        
+
         img_1 = img_1[:70000]
         img_2 = img_2[:70000]
         label = label[:70000]
 
+        data_length = len(img_1)
+        HFL_Split = int(HFL_DATA * data_length)
+
 
         # First 42000 images, HFL & non iid, 3 clients (60%)
-        dataset_train_HFL_1 = img_1[:42000]
-        dataset_train_HFL_2 = img_2[:42000]
-        label_HFL = label[:42000]
+        dataset_train_HFL_1 = img_1[:HFL_Split]
+        dataset_train_HFL_2 = img_2[:HFL_Split]
+        label_HFL = label[:HFL_Split]
         # Create dataset
 
         dataset_train_HFL = imageVFL(dataset_train_HFL_1, dataset_train_HFL_2, label_HFL)
-        dict_users_HFL = cifar_noniid(dataset_train_HFL, 4)
+        dict_users_HFL = cifar_noniid(dataset_train_HFL, HFL_CLIENTS)
 
         # Last 28000 images, VFL, 2 GROUPS of clients, iid (40% of data)
-        dataset_train_VFL_1 = img_1[42000:]
-        dataset_train_VFL_2 = img_2[42000:]
-        label_VFL = label[42000:]
+        dataset_train_VFL_1 = img_1[HFL_Split:]
+        dataset_train_VFL_2 = img_2[HFL_Split:]
+        label_VFL = label[HFL_Split:]
         dataset_train_VFL = imageVFL(dataset_train_VFL_1, dataset_train_VFL_2, label_VFL)
-        dict_users_VFL = cifar_iid(dataset_train_VFL, 2)
+        dict_users_VFL = cifar_iid(dataset_train_VFL, VFL_CLIENTS)
         
 
         img_test_1, img_test_2, label_test, _ = SplitImageDataset(dataset_test)
@@ -285,16 +300,15 @@ if __name__ == '__main__':
         # m = args.num_users
         # idxs_users = np.random.choice(range(args.num_users), m, replace=False)
         # HFL Stage
-        for idx in range(4):
+        for idx in range(HFL_CLIENTS):
             # Each Iteration, we only use parts of the data
             fraction = 1
             selected_idxs = np.random.choice(dict_users_HFL[idx], int(fraction * len(dict_users_HFL[idx])), replace = False)
             # local = LocalUpdate(args=args, dataset=dataset_train, idxs=dict_users[idx])
             local = LocalUpdate(args=args, dataset=dataset_train_HFL, idxs=selected_idxs)
-
-            model = copy.deepcopy(net_glob)
-            model.to(args.device)
-            w, loss, acc = local.train(net=model)
+            net = copy.deepcopy(net_glob)
+            net.to(args.device)
+            w, loss, acc = local.train(net=net)
 
 
             w_locals_HFL.append(copy.deepcopy(w))
@@ -305,16 +319,17 @@ if __name__ == '__main__':
             
 
         # VFL Stage
-        for idx in range(2):
+        for idx in range(VFL_CLIENTS):
             # Each Iteration, we only use parts of the data
 
             fraction = 1
             selected_idxs = np.random.choice(dict_users_VFL[idx], int(fraction * len(dict_users_VFL[idx])), replace = False)
             # local = LocalUpdate(args=args, dataset=dataset_train, idxs=dict_users[idx])
             local = LocalUpdate(args=args, dataset=dataset_train_VFL, idxs=selected_idxs)
-            model = copy.deepcopy(net_glob)
-            model.to(args.device)
-            w, loss, acc = local.train(net=model)
+            # w, loss, acc = local.train(net=copy.deepcopy(net_glob).to(args.device))
+            net = copy.deepcopy(net_glob)
+            net.to(args.device)
+            w, loss, acc = local.train(net=net)
 
             w_locals_VFL.append(copy.deepcopy(w))
             loss_locals.append(copy.deepcopy(loss))
@@ -322,11 +337,16 @@ if __name__ == '__main__':
 
 
         # update global weights
-        agg_HFL = FedAvg(w_locals_HFL)
+        # agg_HFL = FedAvg(w_locals_HFL)
 
-        agg_VFL = FedAvg(w_locals_VFL)
+        # agg_VFL = FedAvg(w_locals_VFL)
 
-        w_glob = FedAvg([agg_HFL, agg_VFL])
+        # w_glob = FedAvg([agg_HFL, agg_VFL])
+
+
+        # Baseline
+        baseline = w_locals_HFL + w_locals_VFL
+        w_glob = FedAvg(baseline)
 
         # copy weight to net_glob
         net_glob.load_state_dict(w_glob)
