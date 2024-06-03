@@ -374,7 +374,7 @@ if __name__ == '__main__':
         
 
     # Write to CSV
-    file_path = './results/fed_{}_{}_{}_{}_HFL{}_VFL{}.csv'.format(args.dataset, args.epochs, args.opt, args.lr, args.HFL_Clients, args.HFL_Clients)
+    file_path = './results/fed_{}_{}_{}_{}_HFL{}_VFL{}.csv'.format(args.dataset, args.epochs, args.opt, args.lr, args.HFL_Clients, args.VFL_Clients)
     write_to_csv(file_path, loss_train, loss_test, acc_train, acc_test)
 
     
