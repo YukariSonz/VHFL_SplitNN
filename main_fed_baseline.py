@@ -340,16 +340,16 @@ if __name__ == '__main__':
 
 
         # update global weights
-        agg_HFL = FedAvg(w_locals_HFL)
+        # agg_HFL = FedAvg(w_locals_HFL)
 
-        agg_VFL = FedAvg(w_locals_VFL)
+        # agg_VFL = FedAvg(w_locals_VFL)
 
-        w_glob = FedAvg([agg_HFL, agg_VFL])
+        # w_glob = FedAvg([agg_HFL, agg_VFL])
 
 
         # Baseline
-        # baseline = w_locals_HFL + w_locals_VFL
-        # w_glob = FedAvg(baseline)
+        baseline = w_locals_HFL + w_locals_VFL
+        w_glob = FedAvg(baseline)
 
         # copy weight to net_glob
         net_glob.load_state_dict(w_glob)
