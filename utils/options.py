@@ -30,6 +30,11 @@ def args_parser():
     parser.add_argument('--opt', type=str, default="SGD", help="Optimizer to use: SGD | Adam")
 
 
+    parser.add_argument("--VFL_Clietns", type = int, default = 5, help = "Number of VFL Client Group[s]")
+    parser.add_argument("--HFL_Clietns", type = int, default = 5, help = "Number of HFL Clients")
+    parser.add_argument("--HFL_Data_split", type = float, default = 0.6, help = "Portion of of HFL Data Splits")
+
+
     # other arguments
     parser.add_argument('--dataset', type=str, default='mnist', help="name of dataset")
     parser.add_argument('--iid', action='store_true', help='whether i.i.d or not')

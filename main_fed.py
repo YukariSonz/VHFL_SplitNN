@@ -20,11 +20,7 @@ from models.test import test_img
 from data.imageVFL import imageVFL, SplitImageDataset
 import csv
 
-HFL_CLIENTS = 10
-VFL_CLIENTS = 5
 
-HFL_DATA = 0.6
-VFL_DATA = 0.4
 
 def write_to_csv(file_name, training_loss, testing_loss, training_acc, testing_acc):
     # Parse
@@ -46,6 +42,13 @@ if __name__ == '__main__':
     # parse args
     args = args_parser()
     args.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
+
+
+    HFL_CLIENTS = args.HFL_Clietns
+    VFL_CLIENTS = args.VFL_Clietns
+
+    HFL_DATA = args.HFL_Data_split
+    VFL_DATA = 1 - HFL_DATA
 
     # load dataset and split users
     if args.dataset == 'mnist' or args.dataset == 'fmnist':
