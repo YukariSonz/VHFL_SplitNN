@@ -81,7 +81,11 @@ def mnist_noniid(dataset, num_users):
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([], dtype='int64') for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
+
+    # Avoid Floating Point Problem
+    length = num_shards * num_imgs
     labels = dataset.train_labels.numpy()
+    labels = labels[:length]
 
     # sort labels
     idxs_labels = np.vstack((idxs, labels))
@@ -164,14 +168,16 @@ def cifar_noniid(dataset, num_users):
     :return:
     """
 
-    # Non iid but equal
+    # Non iid but equal size
     num_shards, num_imgs = num_users*2, int(len(dataset)/num_users/2)
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([], dtype='int64') for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
 
-
+    length = num_shards * num_imgs
     labels = dataset.train_labels.numpy()
+    labels = labels[:length]
+
 
     # sort labels
     idxs_labels = np.vstack((idxs, labels))
