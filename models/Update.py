@@ -66,5 +66,10 @@ class LocalUpdate(object):
             correct.append(batch_correct/len(batch_loss))
             epoch_loss.append(sum(batch_loss)/len(batch_loss))
 
+
+            local_loss = sum(batch_loss)/len(batch_loss)
+            local_correct = batch_correct/len(batch_loss)
+
         
-        return net.state_dict(), sum(epoch_loss) / len(epoch_loss), 100 * sum(correct) / len(epoch_loss)
+        # return net.state_dict(), sum(epoch_loss) / len(epoch_loss), 100 * sum(correct) / len(epoch_loss)
+        return net.state_dict(), local_loss, local_correct
