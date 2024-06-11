@@ -159,22 +159,20 @@ if __name__ == '__main__':
     elif args.dataset == 'SVHN':
         # trans_cifar = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         transform_train = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize((0.4376821, 0.4437697, 0.47280442), (0.19803012, 0.20101562, 0.19703614)),
         ])
 
         transform_test = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize((0.4376821, 0.4437697, 0.47280442), (0.19803012, 0.20101562, 0.19703614)),
         ])
         
 
         # dataset_train = datasets.CIFAR10('../data/cifar', train=True, download=True, transform=trans_cifar)
         # dataset_test = datasets.CIFAR10('../data/cifar', train=False, download=True, transform=trans_cifar)
         dataset_train = datasets.SVHN('../data/SVHN', split= "train" , download=True, transform=transform_train)
-        dataset_test = datasets.SVHN('../data/SVHN', split= "train" , download=True, transform=transform_test)
+        dataset_test = datasets.SVHN('../data/SVHN', split= "test" , download=True, transform=transform_test)
 
         img_1, img_2, label, _ = SplitImageDataset(dataset_train)
         
